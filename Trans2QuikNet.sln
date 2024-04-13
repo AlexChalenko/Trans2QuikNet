@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34723.18
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A90B10A3-19E1-4251-9706-004281F2E632}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trans2QuikNet", "src\Trans2QuikNet\Trans2QuikNet.csproj", "{606BBD24-1A7B-4AB3-8BA1-C49FD9674341}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{DC127133-6237-45B2-B52A-9EC94E26A28C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "examples\ConsoleApp\ConsoleApp.csproj", "{9D7113B8-70D3-41C0-9D1F-B18177B4652F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unit_tests", "Unit_tests\Unit_tests.csproj", "{6C727434-A001-4F3D-A1A9-379F3371067D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MultipleQuiks", "MultipleQuiks\MultipleQuiks.csproj", "{62EEDBB0-B41D-4884-AB6D-8B07908E8683}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{4735F69C-E07D-4A81-8638-60C4B48BC4D2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5874BF75-B165-4020-A269-921A2C41902C}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{606BBD24-1A7B-4AB3-8BA1-C49FD9674341}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{606BBD24-1A7B-4AB3-8BA1-C49FD9674341}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{606BBD24-1A7B-4AB3-8BA1-C49FD9674341}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{606BBD24-1A7B-4AB3-8BA1-C49FD9674341}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D7113B8-70D3-41C0-9D1F-B18177B4652F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D7113B8-70D3-41C0-9D1F-B18177B4652F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D7113B8-70D3-41C0-9D1F-B18177B4652F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D7113B8-70D3-41C0-9D1F-B18177B4652F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C727434-A001-4F3D-A1A9-379F3371067D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C727434-A001-4F3D-A1A9-379F3371067D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C727434-A001-4F3D-A1A9-379F3371067D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C727434-A001-4F3D-A1A9-379F3371067D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62EEDBB0-B41D-4884-AB6D-8B07908E8683}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62EEDBB0-B41D-4884-AB6D-8B07908E8683}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62EEDBB0-B41D-4884-AB6D-8B07908E8683}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62EEDBB0-B41D-4884-AB6D-8B07908E8683}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{606BBD24-1A7B-4AB3-8BA1-C49FD9674341} = {A90B10A3-19E1-4251-9706-004281F2E632}
+		{9D7113B8-70D3-41C0-9D1F-B18177B4652F} = {DC127133-6237-45B2-B52A-9EC94E26A28C}
+		{6C727434-A001-4F3D-A1A9-379F3371067D} = {4735F69C-E07D-4A81-8638-60C4B48BC4D2}
+		{62EEDBB0-B41D-4884-AB6D-8B07908E8683} = {DC127133-6237-45B2-B52A-9EC94E26A28C}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E2A0BC5F-A5EC-477A-9832-AB83D0732D1F}
+	EndGlobalSection
+EndGlobal
