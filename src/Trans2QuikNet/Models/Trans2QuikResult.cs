@@ -12,5 +12,10 @@
             ExtendedErrorCode = extendedErrorCode;
             ErrorMessage = errorMessage;
         }
+
+        public override string ToString()
+        {
+            return $"Result: {Result}, ExtendedErrorCode: {ExtendedErrorCode}, ErrorMessage: {ErrorMessage}";
+        }
     }
 }

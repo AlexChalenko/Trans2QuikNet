@@ -7,7 +7,7 @@ namespace Trans2QuikNet
 {
     public class QuikTransactionManager : IDisposable, IQuikTransactionManager
     {
-        private readonly Trans2QuikAPI _api;
+        private readonly ITrans2QuikAPI _api;
 
 
         private TRANS2QUIK_SEND_SYNC_TRANSACTION _sendTransaction;
@@ -32,7 +32,7 @@ namespace Trans2QuikNet
 
         public event EventHandler<TransactionReplyEventArgs>? OnTransactionReplyReceived;
 
-        public QuikTransactionManager(Trans2QuikAPI api)
+        public QuikTransactionManager(ITrans2QuikAPI api)
         {
             _api = api ?? throw new ArgumentNullException(nameof(api));
 

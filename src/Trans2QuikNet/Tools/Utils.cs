@@ -124,12 +124,12 @@ namespace Trans2QuikNet.Tools
             {2, "Получена последняя заявка из начальной рассылки"},
         };
 
-        public static string DecodeNMode(long nMode)
+        public static string DecodeOrderNMode(long nMode)
         {
             return nModeDict.TryGetValue(nMode, out string decoded) ? decoded : "Неизвестный признак получение заявок";
         }
 
-        private static Dictionary<long, string> nStatusDict = new Dictionary<long, string>()
+        private static Dictionary<long, string> nOrderStatusDict = new Dictionary<long, string>()
         {
             {0, "Исполнена"},
             {1, "Активна"},
@@ -138,8 +138,25 @@ namespace Trans2QuikNet.Tools
 
         public static string DecodeNStatus(long nStatus)
         {
-            return nStatusDict.TryGetValue(nStatus, out string decoded) ? decoded : "Неизвестное состояние исполнения заявки";
+            return nOrderStatusDict.TryGetValue(nStatus, out string decoded) ? decoded : "Неизвестное состояние исполнения заявки";
         }
 
+        private static Dictionary<long, string> nTradeStatusDict = new Dictionary<long, string>()
+        {
+            {1, "Обычная" },
+            {2, "Адресная" },
+            {3, "Первичное размещение" },
+            {4, "Перевод денег / инструментов" },
+            {5, "Адресная сделка первой части РЕПО" },
+            {6, "Расчетная по операции своп" },
+            {7, "Расчетная по внебиржевой операции своп" },
+            {8, "Расчетная сделка бивалютной корзины" },
+            {9, "Расчетная внебиржевая сделка бивалютной корзины" },
+        };
+
+        public static string DecodeTradeStatus(long nTradeStatus)
+        {
+            return nTradeStatusDict.TryGetValue(nTradeStatus, out string decoded) ? decoded : "Неизвестный вид сделки";
+        }
     }
 }
