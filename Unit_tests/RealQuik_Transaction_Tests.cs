@@ -28,7 +28,7 @@ namespace Trans2QuikNet.Tests
                 ClientCode = "420GPTR"
             };
 
-            transactionManager.OnTransactionReply += (sender, args) =>
+            transactionManager.OnTransactionReplyReceived += (sender, args) =>
             {
                 Assert.Equal(Result.SUCCESS, args.TransactionResult);
                 Assert.Equal(0, args.TransactionReplyCode);
@@ -63,7 +63,7 @@ namespace Trans2QuikNet.Tests
                 TransactionType = TranType.New
             };
 
-            transactionManager.OnTransactionReply += (sender, args) =>
+            transactionManager.OnTransactionReplyReceived += (sender, args) =>
             {
                 eventFired = true;
                 //Assert.Equal(Result.SUCCESS, args.TransactionResult);

@@ -4,6 +4,8 @@ namespace Trans2QuikNet
 {
     public interface IQuikConnector
     {
+        event EventHandler<ConnectionStatusEventArgs>? OnConnectionStatusChanged;
+
         /// <summary>
         /// Подключается к терминалу QUIK.
         /// </summary>

@@ -31,7 +31,7 @@ namespace MultipleQuiks.ViewModels
             {
 
                 //_connection.Connect();
-                IsConnected = _connection.IsQuikConnected().Result == Result.DLL_CONNECTED;
+                IsConnected = _connection.IsQuikConnected().Result == Result.QUIK_CONNECTED;
             }
             catch (Exception ex)
             {
@@ -68,7 +68,7 @@ namespace MultipleQuiks.ViewModels
             try
             {
                 _connection.Connect();
-                //IsConnected = _connection.IsQuikConnected();
+                IsConnected = _connection.IsQuikConnected().Result == Result.QUIK_CONNECTED;
             }
             catch (Exception ex)
             {

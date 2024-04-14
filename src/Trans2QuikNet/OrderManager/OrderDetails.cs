@@ -32,7 +32,7 @@ namespace Trans2QuikNet.OrderManager
 
         public override string ToString()
         {
-            return $"\nUserId: {UserId}, Account: {Account}, BrokerRef: {BrokerRef}, ClientCode: {ClientCode}, FirmId: {FirmId}, RejectReason: {RejectReason}, Qty: {Qty}, OrderDate: {OrderDate}, OrderTime: {OrderTime}, OrderActivationTime: {OrderActivationTime}, OrderWithdrawalTime: {OrderWithdrawalTime}, OrderExpiry: {OrderExpiry}, OrderAccruedInt: {OrderAccruedInt}, OrderYield: {OrderYield}, OrderUid: {OrderUid}, VisibleQty: {VisibleQty}, Period: {Period}, OrderDatetime: {OrderDatetime}, ValueEntryType: {ValueEntryType}, ExtendedFlags: {ExtendedFlags}, MinQty: {MinQty}, ExecType: {ExecType}, AvgPrice: {AvgPrice}";
+            return $"UserId: {UserId}, Account: {Account}, BrokerRef: {BrokerRef}, ClientCode: {ClientCode}, FirmId: {FirmId}, RejectReason: {RejectReason}, Qty: {Qty}, OrderDate: {OrderDate}, OrderTime: {OrderTime}, OrderActivationTime: {OrderActivationTime}, OrderWithdrawalTime: {OrderWithdrawalTime}, OrderExpiry: {OrderExpiry}, OrderAccruedInt: {OrderAccruedInt}, OrderYield: {OrderYield}, OrderUid: {OrderUid}, VisibleQty: {VisibleQty}, Period: {Period}, OrderDatetime: {OrderDatetime}, ValueEntryType: {ValueEntryType}, ExtendedFlags: {ExtendedFlags}, MinQty: {MinQty}, ExecType: {ExecType}, AvgPrice: {AvgPrice}";
         }
     }
 }

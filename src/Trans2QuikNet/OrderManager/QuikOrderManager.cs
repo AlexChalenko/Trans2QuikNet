@@ -1,12 +1,10 @@
-﻿using System.Runtime.InteropServices;
-using Trans2QuikNet.Delegates;
+﻿using Trans2QuikNet.Delegates;
 using Trans2QuikNet.Models;
 
 namespace Trans2QuikNet.OrderManager
 {
-    public class QuikOrderManager
+    public class QuikOrderManager : IQuikOrderManager, IDisposable
     {
-
         private readonly Trans2QuikAPI _api;
 
         private TRANS2QUIK_SUBSCRIBE_ORDERS _subscribeOrders;
@@ -42,51 +40,50 @@ namespace Trans2QuikNet.OrderManager
         private TRANS2QUIK_REPLY_LONG _orderExecType;
         private TRANS2QUIK_REPLY_DOUBLE _orderAvgPrice;
         private TRANS2QUIK_REPLY_STRING _orderRejectionReason;
+        private bool disposedValue;
 
         public event EventHandler<OrderStatusEventArgs> OnOrderStatusReceived;
 
         public QuikOrderManager(Trans2QuikAPI api)
         {
-            _api = api;
+            _api = api ?? throw new ArgumentNullException(nameof(api));
 
             InitializeDelegates();
-
-            //    _orderStatusCallback = new TRANS2QUIK_ORDER_STATUS_CALLBACK(OrderStatusCallback);
         }
 
         private void InitializeDelegates()
         {
-            _subscribeOrders = GetDelegate<TRANS2QUIK_SUBSCRIBE_ORDERS>("TRANS2QUIK_SUBSCRIBE_ORDERS");
-            _startOrders = GetDelegate<TRANS2QUIK_START_ORDERS>("TRANS2QUIK_START_ORDERS");
-            _unsubscribeOrders = GetDelegate<TRANS2QUIK_UNSUBSCRIBE_ORDERS>("TRANS2QUIK_UNSUBSCRIBE_ORDERS");
+            _subscribeOrders = _api.GetDelegate<TRANS2QUIK_SUBSCRIBE_ORDERS>("TRANS2QUIK_SUBSCRIBE_ORDERS");
+            _startOrders = _api.GetDelegate<TRANS2QUIK_START_ORDERS>("TRANS2QUIK_START_ORDERS");
+            _unsubscribeOrders = _api.GetDelegate<TRANS2QUIK_UNSUBSCRIBE_ORDERS>("TRANS2QUIK_UNSUBSCRIBE_ORDERS");
 
-            _orderQty = GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_QTY");
-            _orderDate = GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_DATE");
-            _orderTime = GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_TIME");
-            _orderActivationTime = GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_ACTIVATION_TIME");
-            _orderWithdrawalTime = GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_WITHDRAW_TIME");
-            _orderExpiry = GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_EXPIRY");
-            _orderAccruedInt = GetDelegate<TRANS2QUIK_REPLY_DOUBLE>("TRANS2QUIK_ORDER_ACCRUED_INT");
-            _orderYield = GetDelegate<TRANS2QUIK_REPLY_DOUBLE>("TRANS2QUIK_ORDER_YIELD");
-            _orderUserid = GetDelegate<TRANS2QUIK_REPLY_STRING>("TRANS2QUIK_ORDER_USERID");
-            _orderUid = GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_UID");
+            _orderQty = _api.GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_QTY");
+            _orderDate = _api.GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_DATE");
+            _orderTime = _api.GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_TIME");
+            _orderActivationTime = _api.GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_ACTIVATION_TIME");
+            _orderWithdrawalTime = _api.GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_WITHDRAW_TIME");
+            _orderExpiry = _api.GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_EXPIRY");
+            _orderAccruedInt = _api.GetDelegate<TRANS2QUIK_REPLY_DOUBLE>("TRANS2QUIK_ORDER_ACCRUED_INT");
+            _orderYield = _api.GetDelegate<TRANS2QUIK_REPLY_DOUBLE>("TRANS2QUIK_ORDER_YIELD");
+            _orderUserid = _api.GetDelegate<TRANS2QUIK_REPLY_STRING>("TRANS2QUIK_ORDER_USERID");
+            _orderUid = _api.GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_UID");
 
-            _orderAccount = GetDelegate<TRANS2QUIK_REPLY_STRING>("TRANS2QUIK_ORDER_ACCOUNT");
-            _orderBrokerRef = GetDelegate<TRANS2QUIK_REPLY_STRING>("TRANS2QUIK_ORDER_BROKERREF");
-            _orderClientCode = GetDelegate<TRANS2QUIK_REPLY_STRING>("TRANS2QUIK_ORDER_CLIENT_CODE");
-            _orderFirmid = GetDelegate<TRANS2QUIK_REPLY_STRING>("TRANS2QUIK_ORDER_FIRMID");
-            _orderVisibleQty = GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_VISIBLE_QTY");
-            _orderPeriod = GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_PERIOD");
-            _orderFileTime = GetDelegate<TRANS2QUIK_REPLY_INTPTR>("TRANS2QUIK_ORDER_FILETIME");
-            _orderWithdrawFileTime = GetDelegate<TRANS2QUIK_REPLY_INTPTR>("TRANS2QUIK_ORDER_WITHDRAW_FILETIME");
-            _orderDatetime = GetDelegate<TRANS2QUIK_ORDER_DATE_TIME>("TRANS2QUIK_ORDER_DATE_TIME");
-            _orderValueEntryType = GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_VALUE_ENTRY_TYPE");
+            _orderAccount = _api.GetDelegate<TRANS2QUIK_REPLY_STRING>("TRANS2QUIK_ORDER_ACCOUNT");
+            _orderBrokerRef = _api.GetDelegate<TRANS2QUIK_REPLY_STRING>("TRANS2QUIK_ORDER_BROKERREF");
+            _orderClientCode = _api.GetDelegate<TRANS2QUIK_REPLY_STRING>("TRANS2QUIK_ORDER_CLIENT_CODE");
+            _orderFirmid = _api.GetDelegate<TRANS2QUIK_REPLY_STRING>("TRANS2QUIK_ORDER_FIRMID");
+            _orderVisibleQty = _api.GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_VISIBLE_QTY");
+            _orderPeriod = _api.GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_PERIOD");
+            _orderFileTime = _api.GetDelegate<TRANS2QUIK_REPLY_INTPTR>("TRANS2QUIK_ORDER_FILETIME");
+            _orderWithdrawFileTime = _api.GetDelegate<TRANS2QUIK_REPLY_INTPTR>("TRANS2QUIK_ORDER_WITHDRAW_FILETIME");
+            _orderDatetime = _api.GetDelegate<TRANS2QUIK_ORDER_DATE_TIME>("TRANS2QUIK_ORDER_DATE_TIME");
+            _orderValueEntryType = _api.GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_VALUE_ENTRY_TYPE");
 
-            _orderExtendedFlags = GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_EXTENDED_FLAGS");
-            _orderMinQty = GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_MIN_QTY");
-            _orderExecType = GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_EXEC_TYPE");
-            _orderAvgPrice = GetDelegate<TRANS2QUIK_REPLY_DOUBLE>("TRANS2QUIK_ORDER_AWG_PRICE");
-            _orderRejectionReason = GetDelegate<TRANS2QUIK_REPLY_STRING>("TRANS2QUIK_ORDER_REJECT_REASON");
+            _orderExtendedFlags = _api.GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_EXTENDED_FLAGS");
+            _orderMinQty = _api.GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_MIN_QTY");
+            _orderExecType = _api.GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_ORDER_EXEC_TYPE");
+            _orderAvgPrice = _api.GetDelegate<TRANS2QUIK_REPLY_DOUBLE>("TRANS2QUIK_ORDER_AWG_PRICE");
+            _orderRejectionReason = _api.GetDelegate<TRANS2QUIK_REPLY_STRING>("TRANS2QUIK_ORDER_REJECT_REASON");
         }
 
         public Trans2QuikResult SubscribeOrders(string classCode, string secCodes)
@@ -103,7 +100,6 @@ namespace Trans2QuikNet.OrderManager
         public Trans2QuikResult UnsubscribeOrders()
         {
             return new Trans2QuikResult(_unsubscribeOrders(), default, string.Empty);
-
         }
 
         private void OrderStatusHandler(int nMode, uint dwTransID, ulong dNumber, string ClassCode, string SecCode, double dPrice, long nBalance, double dValue, long nIsSell, long nStatus, nint orderDescriptor)
@@ -180,13 +176,6 @@ namespace Trans2QuikNet.OrderManager
                     newOrderDetails));
         }
 
-        private T GetDelegate<T>(string procName) where T : class
-        {
-            var ptr = _api.GetProcAddress(procName);
-            if (ptr == IntPtr.Zero) throw new InvalidOperationException($"PROC not found: {procName}");
-            return Marshal.GetDelegateForFunctionPointer<T>(ptr);
-        }
-
         private DateTime FromDescriptor(nint datetimeDescriptor)
         {
             if (_orderDatetime(datetimeDescriptor, 0) > 0)
@@ -202,6 +191,35 @@ namespace Trans2QuikNet.OrderManager
             {
                 return default;
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects)
+                }
+                _api?.Dispose();
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~QuikOrderManager()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Trans2QuikNet;
 using Trans2QuikNet.Models;
 using Trans2QuikNet.OrderManager;
+using Trans2QuikNet.TradeManager;
 
 namespace ConsoleApp
 {
@@ -18,18 +19,18 @@ namespace ConsoleApp
             {
                 using var api = new Trans2QuikAPI(quikPath);
 
-                var connector = new QuikConnector(api);
-                var transactionManager = new QuikTransactionManager(api);
-                var orderManager = new QuikOrderManager(api);
+                using var connector = new QuikConnector(api);
+                using var transactionManager = new QuikTransactionManager(api);
+                using var orderManager = new QuikOrderManager(api);
+                using var tradeManager = new QuikTradeManager(api);
 
 
-                transactionManager.OnTransactionReply += (sender, args) =>
+                transactionManager.OnTransactionReplyReceived += (sender, args) =>
                 {
-                    Console.WriteLine($"TransactionResult: {args.TransactionResult}");
-                    Console.WriteLine($"TransactionReplyCode: {args.TransactionReplyCode}");
-                    Console.WriteLine($"TransactionReplyMessage: {args.TransactionReplyMessage}");
+                    Console.WriteLine("\n");
+                    Console.WriteLine("OnTransactionReply\n");
+                    Console.WriteLine(args);
                 };
-
 
                 connector.Connect();
 
@@ -43,9 +44,17 @@ namespace ConsoleApp
                 {
                     Console.WriteLine("\n");
                     Console.WriteLine("OnOrderStatusReceived\n");
-                    Console.WriteLine($"OrderNum: {args.OrderNumber}");
                     Console.WriteLine(args);
+                };
+
+                var t1 = tradeManager.SubscribeTrades("QJSIM", "");
+                var t2 = tradeManager.StartTrades();
+
+                tradeManager.OnTradeStatusReceived += (sender, args) =>
+                {
                     Console.WriteLine("\n");
+                    Console.WriteLine("OnTradeStatusReceived\n");
+                    Console.WriteLine(args);
                 };
 
                 var transaction = new Transaction(101)
@@ -72,7 +81,6 @@ namespace ConsoleApp
             {
                 Console.WriteLine(ex.Message);
             }
-
         }
     }
 }

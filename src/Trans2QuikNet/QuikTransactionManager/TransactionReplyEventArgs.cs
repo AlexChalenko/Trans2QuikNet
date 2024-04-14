@@ -11,7 +11,6 @@ namespace Trans2QuikNet
         public ulong OrderNum { get; }
         public string TransactionReplyMessage { get; }
 
-        // Другие поля...
 
         public TransactionReplyEventArgs(Result transactionResult, int extendedErrorCode, long transactionReplyCode, uint transactionId, ulong orderNum, string transactionReplyMessage)
         {
@@ -21,8 +20,11 @@ namespace Trans2QuikNet
             TransactionId = transactionId;
             OrderNum = orderNum;
             TransactionReplyMessage = transactionReplyMessage;
-            // Инициализация других полей...
+        }
+
+        public override string ToString()
+        {
+            return $"TransactionResult: {TransactionResult}, ExtendedErrorCode: {ExtendedErrorCode}, TransactionReplyCode: {TransactionReplyCode}, TransactionId: {TransactionId}, OrderNum: {OrderNum}, TransactionReplyMessage: {TransactionReplyMessage}";
         }
     }
-
 }

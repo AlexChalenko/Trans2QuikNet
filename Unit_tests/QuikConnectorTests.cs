@@ -1,121 +1,89 @@
-﻿using Trans2QuikNet.Models;
+﻿using Moq;
+using System;
+using System.Text;
+using Trans2QuikNet.Delegates;
+using Trans2QuikNet.Models;
 using Xunit;
 
 
 namespace Trans2QuikNet.Tests
 {
-
-    public class QuikConnectorTests /*: IClassFixture<QuikConnectorFixture>*/
+    public class QuikConnectorTests
     {
-
-        //private readonly QuikConnector _connector;
-        //private readonly Trans2QuikAPI _api;
-        private readonly string realPathToQuik = "C:\\QUIK_SBER\\";
-        private readonly string fakePathToQuik = "C:\\QUIK_SBERq\\";
-
-        //public QuikConnectorTests()
-        //{
-        //    _api = new Trans2QuikAPI(realPathToQuik);
-        //    _connector = new QuikConnector(_api);
-        //}
-
-        //REAL CONNECTION
-        //private string _pathToQuik = "C:\\QUIK_SBER\\";
-
         [Fact]
-        public void Connect_Successful()
-        {
-            using var api = new Trans2QuikAPI(realPathToQuik);
-            var connector = new QuikConnector(api);
-
-            var connectException = Record.Exception(connector.Connect);
-
-            Assert.Null(connectException);
-            //Assert.True(connector.IsDllConnected());
-            connector.Disconnect();
-        }
-
-        [Fact]
-        public void Connect_Disconnect_Successful()
-        {
-            using var api = new Trans2QuikAPI(realPathToQuik);
-            var connector = new QuikConnector(api);
-
-            var exception = Record.Exception(connector.Connect);
-
-            Assert.Null(exception);
-
-            var disException = Record.Exception(connector.Disconnect);
-            Assert.Null(disException);
-        }
-
-        [Fact]
-        public void Connect_Failed()
-        {
-            var exception = Record.Exception(() =>
-            {
-                using var api = new Trans2QuikAPI(fakePathToQuik);
-            });
-
-            Assert.NotNull(exception);
-        }
-
-        [Fact]
-        public void OnConnectionStatus_Fires_Correctly()
+        public void Connector_ShouldCallNativeConnect_AndReturnSuccess_WhenDllFunctionsAreAvailable()
         {
             // Arrange
-            bool eventFired = false;
-            Result expectedEvent = Result.DLL_CONNECTED;
-            int expectedErrorCode = 0;
-            string expectedMessage = "";
+            var apiMock = new Mock<ITrans2QuikAPI>();
+            apiMock.Setup(api => api.QuikPath).Returns("valid_path");
 
-            using var api = new Trans2QuikAPI(realPathToQuik);
-            var connector = new QuikConnector(api);
+            var connectDelegateMock = new Mock<TRANS2QUIK_CONNECT>();
+            connectDelegateMock.Setup(x => x(apiMock.Object.QuikPath, ref It.Ref<long>.IsAny, It.IsAny<StringBuilder>(), It.IsAny<uint>()))
+                               .Returns(Result.SUCCESS);  // Предполагаем, что функция подключения возвращает успех
 
-            connector.OnConnectionStatusChanged += (sender, e) =>
-            {
-                var api = new Trans2QuikAPI(realPathToQuik);
-                var connector = new QuikConnector(api);
-                eventFired = true;
-                Assert.Equal(expectedEvent, e.ConnectionEvent);
-                Assert.Equal(expectedErrorCode, e.ExtendedErrorCode);
-                Assert.Equal(expectedMessage, e.ErrorMessage);
-            };
+            apiMock.Setup(api => api.GetDelegate<TRANS2QUIK_CONNECT>("TRANS2QUIK_CONNECT"))
+                   .Returns(connectDelegateMock.Object);  // Мокируем получение делегата
 
-            // Simulate the event trigger from the native API
-            connector.Connect();
+            var setConnectionStatusCallbackDelegateMock = new Mock<TRANS2QUIK_SET_CONNECTION_STATUS_CALLBACK>();
+            var connectionStatusHandler = new Mock<TRANS2QUIK_CONNECTION_STATUS_CALLBACK>();
+                                
+
+            setConnectionStatusCallbackDelegateMock.Setup(x => x(connectionStatusHandler.Object, ref It.Ref<long>.IsAny, It.IsAny<StringBuilder>(), It.IsAny<uint>()))
+                                                   .Returns(Result.SUCCESS);  // Предполагаем, что функция установки обработчика статуса подключения возвращает успех
+
+            apiMock.Setup(api => api.GetDelegate<TRANS2QUIK_SET_CONNECTION_STATUS_CALLBACK>("TRANS2QUIK_SET_CONNECTION_STATUS_CALLBACK"))
+                .Returns(setConnectionStatusCallbackDelegateMock.Object);
+
+            var connector = new QuikConnector(apiMock.Object);
+            // Act
+            var result = connector.Connect();
 
             // Assert
-            Assert.True(eventFired, "The connection status event should have been fired.");
-
-            connector.Disconnect();
+            Assert.True(result.Result == Result.SUCCESS);  // Утверждаем, что результат успешен
         }
 
-        //TODO : MemoryLeakTest
-        //[Fact]
-        //public void MemoryLeakTest()
-        //{
-        //    // Arrange
-        //    using var api = new Trans2QuikAPI(realPathToQuik);
-        //    var connector = new QuikConnector(api);
-        //    connector.Connect();
+        [Fact]
+        public void Connector_ShouldCallNativeDisconnect_AndReturnSuccess_WhenDllFunctionsAreAvailable()
+        {
+            // Arrange
+            var apiMock = new Mock<ITrans2QuikAPI>();
+            apiMock.Setup(api => api.QuikPath).Returns("valid_path");
 
-        //    // Act
-        //    connector.Disconnect();
-        //    api.Dispose();
+            //apiMock.Setup(api => api.GetDelegate<("TRANS2QUIK_CONNECT"))
+            //       .Returns(new IntPtr(123456));  // Предполагаем, что адрес функции получен
 
-        //    // Assert
-        //    //Assert.True(api.Dispose);
-        //}
+            var connectDelegateMock = new Mock<TRANS2QUIK_CONNECT>();
+            connectDelegateMock.Setup(x => x(apiMock.Object.QuikPath, ref It.Ref<long>.IsAny, It.IsAny<StringBuilder>(), It.IsAny<uint>()))
+                               .Returns(Result.SUCCESS);  // Предполагаем, что функция подключения возвращает успех
+
+            apiMock.Setup(api => api.GetDelegate<TRANS2QUIK_CONNECT>("TRANS2QUIK_CONNECT"))
+                   .Returns(connectDelegateMock.Object);  // Мокируем получение делегата
+
+            var disconnectDelegateMock = new Mock<TRANS2QUIK_DISCONNECT>();
+            apiMock.Setup(api=>api.GetDelegate<TRANS2QUIK_DISCONNECT>("TRANS2QUIK_DISCONNECT"))
+                   .Returns(disconnectDelegateMock.Object);  // Мокируем получение делегата
+            disconnectDelegateMock.Setup(x => x(ref It.Ref<long>.IsAny, It.IsAny<StringBuilder>(), It.IsAny<uint>()))
+                               .Returns(Result.SUCCESS);  // Предполагаем, что функция отключения возвращает успех
+
+            var setConnectionStatusCallbackDelegateMock = new Mock<TRANS2QUIK_SET_CONNECTION_STATUS_CALLBACK>();
+            setConnectionStatusCallbackDelegateMock.Setup(x => x(It.IsAny<TRANS2QUIK_CONNECTION_STATUS_CALLBACK>(), ref It.Ref<long>.IsAny, It.IsAny<StringBuilder>(), It.IsAny<uint>()))
+                                                   .Returns(Result.SUCCESS);  // Предполагаем, что функция установки обработчика статуса подключения возвращает успех
+
+            apiMock.Setup(api => api.GetDelegate<TRANS2QUIK_SET_CONNECTION_STATUS_CALLBACK>("TRANS2QUIK_SET_CONNECTION_STATUS_CALLBACK"))
+                .Returns(setConnectionStatusCallbackDelegateMock.Object);  // Мокируем получение делегата
 
 
-        //public void Dispose()
-        //{
-        //    // Очистка после каждого теста
-        //    //_api.Dispose();
+            var connector = new QuikConnector(apiMock.Object);
 
-        //    // Здесь можно добавить другие действия по очистке
-        //    Console.WriteLine("Cleanup after each test");
-        //}
+            // Act
+            var connectResult = connector.Connect();
+
+            // Assert
+            Assert.True(connectResult.Result == Result.SUCCESS);  // Утверждаем, что результат успешен
+
+            var disconnectResult = connector.Disconnect();
+
+            Assert.True(disconnectResult.Result == Result.SUCCESS);
+        }
     }
 }

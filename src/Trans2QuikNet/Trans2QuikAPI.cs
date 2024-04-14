@@ -2,7 +2,7 @@
 
 namespace Trans2QuikNet
 {
-    public class Trans2QuikAPI : IDisposable
+    public class Trans2QuikAPI : ITrans2QuikAPI
     {
         public string QuikPath { get; }
 
@@ -20,7 +20,6 @@ namespace Trans2QuikNet
         private nint _libraryHandle = nint.Zero;
         private bool disposedValue;
 
-        public IntPtr LibraryHandle => _libraryHandle;
         public Trans2QuikAPI(string path)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(path, nameof(path));
@@ -71,9 +70,16 @@ namespace Trans2QuikNet
             GC.SuppressFinalize(this);
         }
 
-        public nint GetProcAddress(string name)
+        public nint GetProcAddressByName(string name)
         {
             return GetProcAddress(_libraryHandle, name);
+        }
+
+        public T GetDelegate<T>(string procName) where T : class
+        {
+            var ptr = GetProcAddress(_libraryHandle, procName);
+            if (ptr == IntPtr.Zero) throw new InvalidOperationException($"PROC not found: {procName}");
+            return Marshal.GetDelegateForFunctionPointer<T>(ptr);
         }
     }
 }

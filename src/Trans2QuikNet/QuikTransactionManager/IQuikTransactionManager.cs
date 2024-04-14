@@ -4,7 +4,7 @@ namespace Trans2QuikNet
 {
     public interface IQuikTransactionManager
     {
-        void Dispose();
+        event EventHandler<TransactionReplyEventArgs>? OnTransactionReplyReceived;
         Trans2QuikResult SendTranactionAsync(Transaction transaction);
         Trans2QuikTransactionResult SendTransaction(Transaction transaction);
     }
