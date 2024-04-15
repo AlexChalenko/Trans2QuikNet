@@ -14,5 +14,10 @@
             OrderNum = orderNum;
             ResultMessage = resultMessage;
         }
+
+        public override string ToString()
+        {
+            return $"TransId: {TransId}, OrderNum: {OrderNum}, ReplyCode: {ReplyCode}, ResultMessage: {ResultMessage}, {base.ToString()}";
+        }
     }
 }
