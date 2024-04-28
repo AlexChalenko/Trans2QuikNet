@@ -20,6 +20,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5874BF75-B165-4020-A269-921A2C41902C}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
+		..\..\..\Downloads\Trans2QuikAPI_1.5_x64\trans2quik_api.h = ..\..\..\Downloads\Trans2QuikAPI_1.5_x64\trans2quik_api.h
 	EndProjectSection
 EndProject
 Global

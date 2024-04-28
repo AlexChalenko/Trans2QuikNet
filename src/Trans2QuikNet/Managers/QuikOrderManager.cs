@@ -1,7 +1,9 @@
 ﻿using Trans2QuikNet.Delegates;
+using Trans2QuikNet.Interfaces;
 using Trans2QuikNet.Models;
+using Trans2QuikNet.Tools;
 
-namespace Trans2QuikNet.OrderManager
+namespace Trans2QuikNet.Managers
 {
     public class QuikOrderManager : IQuikOrderManager, IDisposable
     {

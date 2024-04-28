@@ -2,7 +2,6 @@
 {
     public class Order
     {
-
         public int TransactionId;
         public Side Side;
         public ulong OrderNum;

@@ -1,6 +1,4 @@
-﻿using Trans2QuikNet.Models;
-
-namespace Trans2QuikNet
+﻿namespace Trans2QuikNet.Models
 {
     public class TransactionReplyEventArgs : EventArgs
     {

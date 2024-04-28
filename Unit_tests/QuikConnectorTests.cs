@@ -2,6 +2,8 @@
 using System;
 using System.Text;
 using Trans2QuikNet.Delegates;
+using Trans2QuikNet.Interfaces;
+using Trans2QuikNet.Managers;
 using Trans2QuikNet.Models;
 using Xunit;
 

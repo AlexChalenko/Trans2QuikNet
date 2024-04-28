@@ -1,5 +1,7 @@
-﻿using System.Runtime.InteropServices;
+﻿global using TradeDescriptor = nint;
+using System.Runtime.InteropServices;
 using Trans2QuikNet.Models;
+
 
 namespace Trans2QuikNet.Delegates
 {
@@ -15,7 +17,7 @@ namespace Trans2QuikNet.Delegates
         long nQty,
         double dValue,
         long nIsSell,
-        nint tradeDescriptor);
+        TradeDescriptor tradeDescriptor);
 
     // Delegate for subscribing to trades.
     [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Ansi)]
@@ -28,7 +30,6 @@ namespace Trans2QuikNet.Delegates
     // Delegate for starting the reception of trades.
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate Result TRANS2QUIK_START_TRADES(TRANS2QUIK_TRADE_STATUS_CALLBACK callback);
-
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate long TRANS2QUIK_TRADE_DATE_TIME(nint orderDescriptor, long nTimeType);

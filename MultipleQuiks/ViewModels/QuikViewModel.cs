@@ -1,7 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Trans2QuikNet;
+using Trans2QuikNet.Managers;
 using Trans2QuikNet.Models;
+using Trans2QuikNet.Tools;
 
 namespace MultipleQuiks.ViewModels
 {

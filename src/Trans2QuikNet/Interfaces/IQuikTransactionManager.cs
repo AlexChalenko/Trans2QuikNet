@@ -1,6 +1,6 @@
 ﻿using Trans2QuikNet.Models;
 
-namespace Trans2QuikNet
+namespace Trans2QuikNet.Interfaces
 {
     public interface IQuikTransactionManager
     {

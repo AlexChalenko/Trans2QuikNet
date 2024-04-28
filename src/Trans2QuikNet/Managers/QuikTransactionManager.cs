@@ -1,16 +1,17 @@
 ﻿using System.Text;
 using Trans2QuikNet.Delegates;
 using Trans2QuikNet.Exceptions;
+using Trans2QuikNet.Interfaces;
 using Trans2QuikNet.Models;
 
-namespace Trans2QuikNet
+namespace Trans2QuikNet.Managers
 {
     public class QuikTransactionManager : IDisposable, IQuikTransactionManager
     {
         private readonly ITrans2QuikAPI _api;
 
 
-        private TRANS2QUIK_SEND_SYNC_TRANSACTION _sendTransaction;
+        private TRANS2QUIK_SEND_SYNC_TRANSACTION? _sendTransaction;
         private TRANS2QUIK_SEND_ASYNC_TRANSACTION? _sendTransactionAsync;
         private TRANS2QUIK_SET_TRANSACTIONS_REPLY_CALLBACK? _setTransactionReplyCallback;
 
@@ -92,7 +93,7 @@ namespace Trans2QuikNet
             long errorCode = 0;
             int replyCode = 0;
             uint transactionId = 0;
-            ulong orderNum = 0;
+            EntityNumber orderNum = 0;
             var resultMessage = new StringBuilder(1024);
             _errorMessageBuilder.Clear();
 
@@ -118,14 +119,10 @@ namespace Trans2QuikNet
         {
             int errorCode = 0;
             _errorMessageBuilder.Clear();
-            return new Trans2QuikResult(
-                _sendTransactionAsync(
-                    transaction.ToString(),
-                    ref errorCode,
-                    _errorMessageBuilder,
-                    (uint)_errorMessageBuilder.Capacity),
-                errorCode,
-                _errorMessageBuilder.ToString());
+            return new Trans2QuikResult(_sendTransactionAsync(transaction.ToString(),
+                                                              ref errorCode,
+                                                              _errorMessageBuilder,
+                                                              (uint)_errorMessageBuilder.Capacity), errorCode, _errorMessageBuilder.ToString());
         }
 
         protected virtual void Dispose(bool disposing)

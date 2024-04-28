@@ -1,4 +1,4 @@
-﻿namespace Trans2QuikNet.TradeManager
+﻿namespace Trans2QuikNet.Models
 {
     public class TradeDetails
     {
@@ -70,7 +70,7 @@ LPTSTR TRANS2QUIK_API __stdcall TRANS2QUIK_TRADE_STATION_ID (TradeDescriptor tra
 
         public long Period { get; set; }
         public long Kind { get; set; }
-        public DateTime FileTime {get; set;}
+        public DateTime FileTime { get; set; }
         public DateTime DateTime { get; set; }
         public double BrokerCommission { get; set; }
         public long TransId { get; set; }
@@ -78,7 +78,7 @@ LPTSTR TRANS2QUIK_API __stdcall TRANS2QUIK_TRADE_STATION_ID (TradeDescriptor tra
         public string Currency { get; set; }
         public string SettleCurrency { get; set; }
         public string SettleCode { get; set; }
-        
+
         public string Account { get; set; }
         public string BrokerRef { get; set; }
         public string ClientCode { get; set; }

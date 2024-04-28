@@ -1,5 +1,4 @@
-﻿
-namespace Trans2QuikNet.OrderManager
+﻿namespace Trans2QuikNet.Models
 {
     public class OrderDetails
     {

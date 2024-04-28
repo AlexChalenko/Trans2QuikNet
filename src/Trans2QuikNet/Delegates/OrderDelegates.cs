@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿global using OrderDescriptor = nint;
+using System.Runtime.InteropServices;
 using Trans2QuikNet.Models;
 
 namespace Trans2QuikNet.Delegates
@@ -16,5 +17,5 @@ namespace Trans2QuikNet.Delegates
     public delegate Result TRANS2QUIK_UNSUBSCRIBE_ORDERS();
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate long TRANS2QUIK_ORDER_DATE_TIME(nint orderDescriptor, long nTimeType);
+    public delegate long TRANS2QUIK_ORDER_DATE_TIME(OrderDescriptor orderDescriptor, long nTimeType);
 }

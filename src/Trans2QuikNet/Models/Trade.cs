@@ -46,7 +46,5 @@
         public string ExchangeCode;
         public string StationId;
         public int TransactionId;
-
-
     }
 }

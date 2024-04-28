@@ -1,9 +1,10 @@
 ﻿using System.Text;
 using Trans2QuikNet.Delegates;
 using Trans2QuikNet.Exceptions;
+using Trans2QuikNet.Interfaces;
 using Trans2QuikNet.Models;
 
-namespace Trans2QuikNet
+namespace Trans2QuikNet.Managers
 {
     public class QuikConnector : IQuikConnector, IDisposable
     {

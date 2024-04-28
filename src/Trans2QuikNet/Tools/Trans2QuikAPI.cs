@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
+using Trans2QuikNet.Interfaces;
 
-namespace Trans2QuikNet
+namespace Trans2QuikNet.Tools
 {
     public class Trans2QuikAPI : ITrans2QuikAPI
     {
@@ -28,7 +29,7 @@ namespace Trans2QuikNet
 
             _libraryHandle = LoadLibrary(Path.Combine(path, Lib));
 
-            if (_libraryHandle == IntPtr.Zero)
+            if (_libraryHandle == nint.Zero)
             {
                 throw new Exception("Could not load the dynamic library.");
             }
@@ -70,15 +71,10 @@ namespace Trans2QuikNet
             GC.SuppressFinalize(this);
         }
 
-        public nint GetProcAddressByName(string name)
-        {
-            return GetProcAddress(_libraryHandle, name);
-        }
-
         public T GetDelegate<T>(string procName) where T : class
         {
             var ptr = GetProcAddress(_libraryHandle, procName);
-            if (ptr == IntPtr.Zero) throw new InvalidOperationException($"PROC not found: {procName}");
+            if (ptr == nint.Zero) throw new InvalidOperationException($"PROC not found: {procName}");
             return Marshal.GetDelegateForFunctionPointer<T>(ptr);
         }
     }

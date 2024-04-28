@@ -1,4 +1,4 @@
-﻿namespace Trans2QuikNet.TradeManager
+﻿namespace Trans2QuikNet.Models
 {
     public class TradeStatusEventArgs : EventArgs
     {

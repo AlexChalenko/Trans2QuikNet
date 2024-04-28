@@ -1,7 +1,9 @@
 ﻿using Trans2QuikNet.Delegates;
+using Trans2QuikNet.Interfaces;
 using Trans2QuikNet.Models;
+using Trans2QuikNet.Tools;
 
-namespace Trans2QuikNet.TradeManager
+namespace Trans2QuikNet.Managers
 {
     public class QuikTradeManager : IQuikTradeManager, IDisposable
     {
@@ -127,9 +129,9 @@ LPTSTR TRANS2QUIK_API __stdcall TRANS2QUIK_TRADE_STATION_ID (TradeDescriptor tra
             _tradeRepoRate = _api.GetDelegate<TRANS2QUIK_REPLY_DOUBLE>("TRANS2QUIK_TRADE_REPO_RATE");
             _tradeRepoValue = _api.GetDelegate<TRANS2QUIK_REPLY_DOUBLE>("TRANS2QUIK_TRADE_REPO_VALUE");
             _tradeRepo2Value = _api.GetDelegate<TRANS2QUIK_REPLY_DOUBLE>("TRANS2QUIK_TRADE_REPO2_VALUE");
-            _tradeAccruedInt2  = _api.GetDelegate<TRANS2QUIK_REPLY_DOUBLE>("TRANS2QUIK_TRADE_ACCRUED_INT2");
+            _tradeAccruedInt2 = _api.GetDelegate<TRANS2QUIK_REPLY_DOUBLE>("TRANS2QUIK_TRADE_ACCRUED_INT2");
             _tradeRepoTerm = _api.GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_TRADE_REPO_TERM");
-            _tradeStartDiscount = _api.GetDelegate<TRANS2QUIK_REPLY_DOUBLE>("TRANS2QUIK_TRADE_START_DISCOUNT"); 
+            _tradeStartDiscount = _api.GetDelegate<TRANS2QUIK_REPLY_DOUBLE>("TRANS2QUIK_TRADE_START_DISCOUNT");
             _tradeLowerDiscount = _api.GetDelegate<TRANS2QUIK_REPLY_DOUBLE>("TRANS2QUIK_TRADE_LOWER_DISCOUNT");
             _tradeUpperDiscount = _api.GetDelegate<TRANS2QUIK_REPLY_DOUBLE>("TRANS2QUIK_TRADE_UPPER_DISCOUNT");
             _tradeBlockSecurities = _api.GetDelegate<TRANS2QUIK_REPLY_LONG>("TRANS2QUIK_TRADE_BLOCK_SECURITIES");
@@ -170,7 +172,7 @@ LPTSTR TRANS2QUIK_API __stdcall TRANS2QUIK_TRADE_STATION_ID (TradeDescriptor tra
             return new Trans2QuikResult(_startTrades(_tradeStatusCallback), default, string.Empty);
         }
 
-        private void TradeStatusHandler(long nMode, ulong dNumber, ulong nOrderNumber, string ClassCode, string SecCode, double dPrice, long nQty, double dValue, long nIsSell, nint tradeDescriptor)
+        private void TradeStatusHandler(long nMode, ulong dNumber, ulong nOrderNumber, string ClassCode, string SecCode, double dPrice, long nQty, double dValue, long nIsSell, TradeDescriptor tradeDescriptor)
         {
             var tradeDetails = new TradeDetails()
             {
@@ -210,13 +212,13 @@ LPTSTR TRANS2QUIK_API __stdcall TRANS2QUIK_TRADE_STATION_ID (TradeDescriptor tra
                 Account = _tradeAccount(tradeDescriptor),
                 BrokerRef = _tradeBrokerRef(tradeDescriptor),
                 ClientCode = _tradeClientCode(tradeDescriptor),
-                UserId = _tradeUserId(tradeDescriptor), 
+                UserId = _tradeUserId(tradeDescriptor),
                 FirmId = _tradeFirmId(tradeDescriptor),
                 PartnerFirmId = _tradePartnerFirmId(tradeDescriptor),
                 ExchangeCode = _tradeExchangeCode(tradeDescriptor),
                 StationId = _tradeStationId(tradeDescriptor)
             };
-            
+
             OnTradeStatusReceived?.Invoke(this, new TradeStatusEventArgs((int)nMode, dNumber, nOrderNumber, ClassCode, SecCode, dPrice, nQty, dValue, nIsSell, tradeDetails));
         }
 

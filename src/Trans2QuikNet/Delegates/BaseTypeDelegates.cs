@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using Trans2QuikNet.Models;
 using Trans2QuikNet.Tools;
 
 namespace Trans2QuikNet.Delegates
@@ -8,10 +7,6 @@ namespace Trans2QuikNet.Delegates
     [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Ansi)]
     [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(QuikStringMarshaler))]
     public delegate string TRANS2QUIK_REPLY_STRING(nint descriptor);
-
-    //[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    //[return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(FileTimeToDateTimeMarshaler))]
-    //public delegate FILETIME TRANS2QUIK_REPLY_DATETIME(nint descriptor);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate double TRANS2QUIK_REPLY_DOUBLE(nint descriptor);
@@ -30,5 +25,4 @@ namespace Trans2QuikNet.Delegates
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Ansi)]
     public delegate IntPtr TRANS2QUIK_REPLY_INTPTR(nint descriptor);
-
 }
