@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trans2QuikNet", "Trans2QuikNet.csproj", "{2C75BE31-FA92-4C7B-A0F9-B125E41FF573}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2C75BE31-FA92-4C7B-A0F9-B125E41FF573}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C75BE31-FA92-4C7B-A0F9-B125E41FF573}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C75BE31-FA92-4C7B-A0F9-B125E41FF573}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C75BE31-FA92-4C7B-A0F9-B125E41FF573}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {895DD07B-3646-4F68-BB93-C8D5EE6C09BF}
+	EndGlobalSection
+EndGlobal

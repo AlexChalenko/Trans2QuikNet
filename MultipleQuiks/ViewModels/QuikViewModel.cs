@@ -28,37 +28,26 @@ namespace MultipleQuiks.ViewModels
             _connection = new QuikConnector(_api);
             _connection.OnConnectionStatusChanged += Connection_OnConnectionStatusChanged;
 
-            try
-            {
-
-                //_connection.Connect();
-                IsConnected = _connection.IsQuikConnected().Result == Result.QUIK_CONNECTED;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            //_connection.Connect();
+            IsConnected = _connection.IsQuikConnected().Result == Result.QUIK_CONNECTED;
         }
 
         private void Connection_OnConnectionStatusChanged(object? sender, ConnectionStatusEventArgs e)
         {
             App.Current.Dispatcher.Invoke(() =>
             {
-                if (e.ConnectionEvent.Equals(Result.DLL_CONNECTED))
+                switch (e.ConnectionEvent)
                 {
-                    IsDLLConneted = true;
-                }
-                else if (e.ConnectionEvent.Equals(Result.DLL_DISCONNECTED))
-                {
-                    IsDLLConneted = false;
-                }
-                else if (e.ConnectionEvent.Equals(Result.QUIK_CONNECTED))
-                {
-                    IsConnected = true;
-                }
-                else if (e.ConnectionEvent.Equals(Result.QUIK_DISCONNECTED))
-                {
-                    IsConnected = false;
+                    case Result.QUIK_CONNECTED:
+                    case Result.QUIK_DISCONNECTED:
+                        IsConnected = (e.ConnectionEvent == Result.QUIK_CONNECTED);
+                        break;
+                    case Result.DLL_CONNECTED:
+                    case Result.DLL_DISCONNECTED:
+                        IsDLLConneted = (e.ConnectionEvent == Result.DLL_CONNECTED);
+                        break;
+                    default:
+                        throw new NotSupportedException();
                 }
             });
         }
@@ -66,15 +55,8 @@ namespace MultipleQuiks.ViewModels
         [RelayCommand(CanExecute = nameof(CanConnect))]
         private void Connect()
         {
-            try
-            {
-                _connection.Connect();
-                IsConnected = _connection.IsQuikConnected().Result == Result.QUIK_CONNECTED;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            var connectResult = _connection.Connect();
+            IsConnected = _connection.IsQuikConnected().Result == Result.QUIK_CONNECTED;
         }
 
         private bool CanConnect()

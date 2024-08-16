@@ -29,7 +29,7 @@ namespace Trans2QuikNet.Managers
         private readonly StringBuilder _errorMessageBuilder = new(1024);
 
         private bool disposedValue;
-        private TRANS2QUIK_TRANSACTION_REPLY_CALLBACK _transactionReplyCallback;
+        private readonly TRANS2QUIK_TRANSACTION_REPLY_CALLBACK _transactionReplyCallback;
 
         public event EventHandler<TransactionReplyEventArgs>? OnTransactionReplyReceived;
 
@@ -68,22 +68,22 @@ namespace Trans2QuikNet.Managers
             var result = _setTransactionReplyCallback(_transactionReplyCallback, ref errorCode, _errorMessageBuilder, (uint)_errorMessageBuilder.Capacity);
             if (result != Result.SUCCESS)
             {
-                throw new QuikTransactionException($"Error setting transaction reply callback: {_errorMessageBuilder.ToString()}", errorCode);
+                throw new QuikTransactionException($"Error setting transaction reply callback: {_errorMessageBuilder}", errorCode);
             }
         }
 
         private void TransactionReplyHandler(Result nTransactionResult, int nTransactionExtendedErrorCode, long nTransactionReplyCode, uint dwTransId, ulong nOrderNum, StringBuilder lpcstrTransactionReplyMessage, nint transReplyDescriptor)
         {
-            var classCode = _transactionReplyClassCode(transReplyDescriptor);
-            var secCode = _transactionReplySecCode(transReplyDescriptor);
-            var price = _transactionReplyPrice(transReplyDescriptor);
-            var quantity = _transactionReplyQuantity(transReplyDescriptor);
-            var balance = _transactionReplyBalance(transReplyDescriptor);
-            var firmId = _transactionReplyFirmid(transReplyDescriptor);
-            var account = _transactionReplyAccount(transReplyDescriptor);
-            var clientCode = _transactionReplyClientCode(transReplyDescriptor);
-            var brokerRef = _transactionReplyBrokerref(transReplyDescriptor);
-            var exchange = _transactionReplyExchange(transReplyDescriptor);
+            //var classCode = _transactionReplyClassCode(transReplyDescriptor);
+            //var secCode = _transactionReplySecCode(transReplyDescriptor);
+            //var price = _transactionReplyPrice(transReplyDescriptor);
+            //var quantity = _transactionReplyQuantity(transReplyDescriptor);
+            //var balance = _transactionReplyBalance(transReplyDescriptor);
+            //var firmId = _transactionReplyFirmid(transReplyDescriptor);
+            //var account = _transactionReplyAccount(transReplyDescriptor);
+            //var clientCode = _transactionReplyClientCode(transReplyDescriptor);
+            //var brokerRef = _transactionReplyBrokerref(transReplyDescriptor);
+            //var exchange = _transactionReplyExchange(transReplyDescriptor);
 
             OnTransactionReplyReceived?.Invoke(this, new TransactionReplyEventArgs(nTransactionResult, nTransactionExtendedErrorCode, nTransactionReplyCode, dwTransId, nOrderNum, lpcstrTransactionReplyMessage.ToString()));
         }
@@ -97,22 +97,26 @@ namespace Trans2QuikNet.Managers
             var resultMessage = new StringBuilder(1024);
             _errorMessageBuilder.Clear();
 
-            return new Trans2QuikTransactionResult(
-                _sendTransaction(transaction.ToString(),
-                                 ref replyCode,
-                                 ref transactionId,
-                                 ref orderNum,
-                                 resultMessage,
-                                 (uint)resultMessage.Capacity,
-                                 ref errorCode,
-                                 _errorMessageBuilder,
-                                 (uint)_errorMessageBuilder.Capacity),
-                                                   replyCode,
-                                                   transactionId,
-                                                   orderNum,
-                                                   resultMessage.ToString(),
-                                                   errorCode,
-                                                   _errorMessageBuilder.ToString());
+            if (_sendTransaction?.Invoke(transaction.ToString(),
+                                         ref replyCode,
+                                         ref transactionId,
+                                         ref orderNum,
+                                         resultMessage,
+                                         (uint)resultMessage.Capacity,
+                                         ref errorCode,
+                                         _errorMessageBuilder,
+                                         (uint)_errorMessageBuilder.Capacity) is { } result)
+            {
+                return new Trans2QuikTransactionResult(result,
+                                                       replyCode,
+                                                       transactionId,
+                                                       orderNum,
+                                                       resultMessage.ToString(),
+                                                       errorCode,
+                                                       _errorMessageBuilder.ToString());
+            }
+
+            throw new ArgumentNullException(nameof(_sendTransaction));
         }
 
         public Trans2QuikResult SendTranactionAsync(Transaction transaction)

@@ -1,5 +1,4 @@
 ﻿using Moq;
-using System;
 using System.Text;
 using Trans2QuikNet.Delegates;
 using Trans2QuikNet.Interfaces;
@@ -28,7 +27,7 @@ namespace Trans2QuikNet.Tests
 
             var setConnectionStatusCallbackDelegateMock = new Mock<TRANS2QUIK_SET_CONNECTION_STATUS_CALLBACK>();
             var connectionStatusHandler = new Mock<TRANS2QUIK_CONNECTION_STATUS_CALLBACK>();
-                                
+
 
             setConnectionStatusCallbackDelegateMock.Setup(x => x(connectionStatusHandler.Object, ref It.Ref<long>.IsAny, It.IsAny<StringBuilder>(), It.IsAny<uint>()))
                                                    .Returns(Result.SUCCESS);  // Предполагаем, что функция установки обработчика статуса подключения возвращает успех
@@ -62,7 +61,7 @@ namespace Trans2QuikNet.Tests
                    .Returns(connectDelegateMock.Object);  // Мокируем получение делегата
 
             var disconnectDelegateMock = new Mock<TRANS2QUIK_DISCONNECT>();
-            apiMock.Setup(api=>api.GetDelegate<TRANS2QUIK_DISCONNECT>("TRANS2QUIK_DISCONNECT"))
+            apiMock.Setup(api => api.GetDelegate<TRANS2QUIK_DISCONNECT>("TRANS2QUIK_DISCONNECT"))
                    .Returns(disconnectDelegateMock.Object);  // Мокируем получение делегата
             disconnectDelegateMock.Setup(x => x(ref It.Ref<long>.IsAny, It.IsAny<StringBuilder>(), It.IsAny<uint>()))
                                .Returns(Result.SUCCESS);  // Предполагаем, что функция отключения возвращает успех

@@ -1,12 +1,11 @@
 ﻿using Trans2QuikNet.Models;
 
-namespace Trans2QuikNet.Interfaces
+namespace Trans2QuikNet.Interfaces;
+
+public interface IQuikOrderManager
 {
-    public interface IQuikOrderManager
-    {
-        event EventHandler<OrderStatusEventArgs> OnOrderStatusReceived;
-        Trans2QuikResult StartOrders();
-        Trans2QuikResult SubscribeOrders(string classCode, string secCodes);
-        Trans2QuikResult UnsubscribeOrders();
-    }
+    event EventHandler<OrderStatusEventArgs> OnOrderStatusReceived;
+    Trans2QuikResult StartOrders();
+    Trans2QuikResult SubscribeOrders(string classCode, string secCodes);
+    Trans2QuikResult UnsubscribeOrders();
 }

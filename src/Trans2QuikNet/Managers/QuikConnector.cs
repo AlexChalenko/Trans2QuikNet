@@ -11,7 +11,7 @@ namespace Trans2QuikNet.Managers
         private readonly ITrans2QuikAPI _api;
 
         private TRANS2QUIK_CONNECT? _connect;
-        private TRANS2QUIK_DISCONNECT? _disconnest;
+        private TRANS2QUIK_DISCONNECT? _disconnect;
         private TRANS2QUIK_IS_QUIK_CONNECTED? _isQuikConnected;
         private TRANS2QUIK_IS_DLL_CONNECTED? _isDllConnected;
         private TRANS2QUIK_SET_CONNECTION_STATUS_CALLBACK? _setConnectionStatusCallback;
@@ -26,17 +26,31 @@ namespace Trans2QuikNet.Managers
             _api = api ?? throw new ArgumentNullException(nameof(api));
 
             InitializeDelegates();
-            RegisterConnectionStatusCallback();
+            try
+            {
+                RegisterConnectionStatusCallback();
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception (log it, clean up resources, etc.)
+                Dispose(); // Clean up resources if necessary
+                throw new QuikConnectorException("Failed to register connection status callback.", ex);
+            }
         }
 
         private void InitializeDelegates()
         {
-            //TODO: Add IntPtr.Zero check for each delegate
-            _connect = _api.GetDelegate<TRANS2QUIK_CONNECT>("TRANS2QUIK_CONNECT");
-            _disconnest = _api.GetDelegate<TRANS2QUIK_DISCONNECT>("TRANS2QUIK_DISCONNECT");
-            _isDllConnected = _api.GetDelegate<TRANS2QUIK_IS_DLL_CONNECTED>("TRANS2QUIK_IS_DLL_CONNECTED");
-            _isQuikConnected = _api.GetDelegate<TRANS2QUIK_IS_QUIK_CONNECTED>("TRANS2QUIK_IS_QUIK_CONNECTED");
-            _setConnectionStatusCallback = _api.GetDelegate<TRANS2QUIK_SET_CONNECTION_STATUS_CALLBACK>("TRANS2QUIK_SET_CONNECTION_STATUS_CALLBACK");
+            // Initialize delegates with null checks
+            _connect = _api.GetDelegate<TRANS2QUIK_CONNECT>("TRANS2QUIK_CONNECT")
+                ?? throw new InvalidOperationException("Failed to get TRANS2QUIK_CONNECT delegate.");
+            _disconnect = _api.GetDelegate<TRANS2QUIK_DISCONNECT>("TRANS2QUIK_DISCONNECT")
+                ?? throw new InvalidOperationException("Failed to get TRANS2QUIK_DISCONNECT delegate.");
+            _isDllConnected = _api.GetDelegate<TRANS2QUIK_IS_DLL_CONNECTED>("TRANS2QUIK_IS_DLL_CONNECTED")
+                ?? throw new InvalidOperationException("Failed to get TRANS2QUIK_IS_DLL_CONNECTED delegate.");
+            _isQuikConnected = _api.GetDelegate<TRANS2QUIK_IS_QUIK_CONNECTED>("TRANS2QUIK_IS_QUIK_CONNECTED")
+                ?? throw new InvalidOperationException("Failed to get TRANS2QUIK_IS_QUIK_CONNECTED delegate.");
+            _setConnectionStatusCallback = _api.GetDelegate<TRANS2QUIK_SET_CONNECTION_STATUS_CALLBACK>("TRANS2QUIK_SET_CONNECTION_STATUS_CALLBACK")
+                ?? throw new InvalidOperationException("Failed to get TRANS2QUIK_SET_CONNECTION_STATUS_CALLBACK delegate.");
 
             _connectionDelegate = new TRANS2QUIK_CONNECTION_STATUS_CALLBACK(ConnectionStatusHandler);
         }
@@ -48,20 +62,22 @@ namespace Trans2QuikNet.Managers
             long errorCode = 0;
             _errorMessageBuilder.Clear();
 
-            return new Trans2QuikResult(_connect(_api.QuikPath, ref errorCode, _errorMessageBuilder, (uint)_errorMessageBuilder.Length),
-                                        errorCode,
-                                        _errorMessageBuilder.ToString());
+            return new Trans2QuikResult(
+                _connect(_api.QuikPath, ref errorCode, _errorMessageBuilder, (uint)_errorMessageBuilder.Length),
+                errorCode,
+                _errorMessageBuilder.ToString());
         }
 
         public Trans2QuikResult Disconnect()
         {
-            ArgumentNullException.ThrowIfNull(_disconnest, nameof(_disconnest));
+            ArgumentNullException.ThrowIfNull(_disconnect, nameof(_disconnect));
 
             long errorCode = 0;
             _errorMessageBuilder.Clear();
-            return new Trans2QuikResult(_disconnest(ref errorCode, _errorMessageBuilder, (uint)_errorMessageBuilder.Length),
-                                        errorCode,
-                                        _errorMessageBuilder.ToString());
+            return new Trans2QuikResult(
+                _disconnect(ref errorCode, _errorMessageBuilder, (uint)_errorMessageBuilder.Length),
+                errorCode,
+                _errorMessageBuilder.ToString());
         }
 
         public Trans2QuikResult IsQuikConnected()
@@ -71,9 +87,10 @@ namespace Trans2QuikNet.Managers
             long errorCode = 0;
             _errorMessageBuilder.Clear();
 
-            return new Trans2QuikResult(_isQuikConnected(ref errorCode, _errorMessageBuilder, (uint)_errorMessageBuilder.Length),
-                                                       errorCode,
-                                                       _errorMessageBuilder.ToString());
+            return new Trans2QuikResult(
+                _isQuikConnected(ref errorCode, _errorMessageBuilder, (uint)_errorMessageBuilder.Length),
+                errorCode,
+                _errorMessageBuilder.ToString());
         }
 
         public Trans2QuikResult IsDllConnected()
@@ -83,13 +100,24 @@ namespace Trans2QuikNet.Managers
             long errorCode = 0;
             _errorMessageBuilder.Clear();
 
-            return new Trans2QuikResult(_isDllConnected(ref errorCode, _errorMessageBuilder, (uint)_errorMessageBuilder.Length),
-                                                       errorCode,
-                                                       _errorMessageBuilder.ToString());
+            return new Trans2QuikResult(
+                _isDllConnected(ref errorCode, _errorMessageBuilder, (uint)_errorMessageBuilder.Length),
+                errorCode,
+                _errorMessageBuilder.ToString());
         }
 
         private void RegisterConnectionStatusCallback()
         {
+            if (_setConnectionStatusCallback == null)
+            {
+                throw new InvalidOperationException("The connection status callback delegate (_setConnectionStatusCallback) is not initialized.");
+            }
+
+            if (_connectionDelegate == null)
+            {
+                throw new InvalidOperationException("The connection delegate (_connectionDelegate) is not initialized.");
+            }
+
             long errorCode = 0;
             _errorMessageBuilder.Clear();
             var result = _setConnectionStatusCallback(_connectionDelegate, ref errorCode, _errorMessageBuilder, (uint)_errorMessageBuilder.Length);

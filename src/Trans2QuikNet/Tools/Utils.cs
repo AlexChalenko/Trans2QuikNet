@@ -4,7 +4,7 @@ using Trans2QuikNet.Models;
 
 namespace Trans2QuikNet.Tools
 {
-    public static class Utils
+    public static partial class Utils
     {
         private readonly static Encoding RU = Encoding.GetEncoding(1251);
 
@@ -38,13 +38,13 @@ namespace Trans2QuikNet.Tools
 
         public static DateTime FromArqaDealDate(long Date, long Time, long MCS)
         {
-            Match match = Regex.Match(Time.ToString(), @"(\d)(\d{2})(\d{2})");
+            Match match = DateRegex().Match(Time.ToString());
             if (match.Success)
             {
                 int hours = int.Parse(match.Groups[1].Value);
                 int minutes = int.Parse(match.Groups[2].Value);
                 int seconds = int.Parse(match.Groups[3].Value);
-                TimeSpan timeSpan = new TimeSpan(hours, minutes, seconds);
+                TimeSpan timeSpan = new(hours, minutes, seconds);
                 return FromArqaDate(Date).Value
                     .Add(timeSpan)
                     .Add(TimeSpan.ParseExact(MCS.ToString("000000"), "ffffff", null));
@@ -52,17 +52,17 @@ namespace Trans2QuikNet.Tools
             return default;
         }
 
-        public static void V(this StringBuilder sb, string Field, object Value)
+        public static void AppendFieldAndValue(this StringBuilder sb, string Field, object Value)
         {
             switch (Value)
             {
                 case null: return;
                 case int i when i == 0: return;
-                case long i when i == 0: return;
-                case uint i when i == 0: return;
-                case ulong i when i == 0: return;
-                case double i when i == 0: return;
-                case decimal i when i == 0: return;
+                case uint i when i == 0U: return;
+                case long i when i == 0L: return;
+                case ulong i when i == 0UL: return;
+                case double i when i == 0d: return;
+                case decimal i when i == 0m: return;
             }
             sb.Append(Field);
             sb.Append("=");
@@ -91,17 +91,17 @@ namespace Trans2QuikNet.Tools
                 { Result.WRONG_INPUT_PARAMS, "Ошибка параметров Trans2Quik" }
             };
 
-            return errorDict.TryGetValue(Result, out string decoded) ? decoded : "Неизвестная ошибка";
+            return errorDict.TryGetValue(Result, out string? decoded) ? decoded : "Неизвестная ошибка";
         }
 
         public static string DecodeTransactionReply(int replyCode)
         {
             var replyDict = new Dictionary<int, string>()
             {
-                { 0, "транзакция отправлена серверу"},
+                {0, "транзакция отправлена серверу"},
                 {1, "транзакция получена на сервер QUIK от клиента"},
                 {2, "ошибка при передаче транзакции в торговую систему, поскольку отсутствует подключение шлюза Московской Биржи, повторно транзакция не отправляется"},
-                { 3, "транзакция выполнена"},
+                {3, "транзакция выполнена"},
                 {4, "транзакция не выполнена торговой системой, код ошибки торговой системы будет указан в поле «DESCRIPTION»"},
                 {5, "транзакция не прошла проверку сервера QUIK по каким - либо критериям.Например, проверку на наличие прав у пользователя на отправку транзакции данного типа "},
                 {6, "транзакция не прошла проверку лимитов сервера QUIK "},
@@ -117,7 +117,7 @@ namespace Trans2QuikNet.Tools
             return replyDict.TryGetValue(replyCode, out string decoded) ? decoded : "Неизвестная ошибка";
         }
 
-        private static Dictionary<long, string> nModeDict = new Dictionary<long, string>()
+        private static readonly Dictionary<long, string> nModeDict = new Dictionary<long, string>()
         {
             {0, "Новая заявка"},
             {1, "Идет начальное получание заявок" },
@@ -126,7 +126,7 @@ namespace Trans2QuikNet.Tools
 
         public static string DecodeOrderNMode(long nMode)
         {
-            return nModeDict.TryGetValue(nMode, out string decoded) ? decoded : "Неизвестный признак получение заявок";
+            return nModeDict.TryGetValue(nMode, out string? decoded) ? decoded : "Неизвестный признак получение заявок";
         }
 
         private static Dictionary<long, string> nOrderStatusDict = new Dictionary<long, string>()
@@ -138,10 +138,10 @@ namespace Trans2QuikNet.Tools
 
         public static string DecodeNStatus(long nStatus)
         {
-            return nOrderStatusDict.TryGetValue(nStatus, out string decoded) ? decoded : "Неизвестное состояние исполнения заявки";
+            return nOrderStatusDict.TryGetValue(nStatus, out string? decoded) ? decoded : "Неизвестное состояние исполнения заявки";
         }
 
-        private static Dictionary<long, string> nTradeStatusDict = new Dictionary<long, string>()
+        private static readonly Dictionary<long, string> nTradeStatusDict = new Dictionary<long, string>()
         {
             {1, "Обычная" },
             {2, "Адресная" },
@@ -156,7 +156,10 @@ namespace Trans2QuikNet.Tools
 
         public static string DecodeTradeStatus(long nTradeStatus)
         {
-            return nTradeStatusDict.TryGetValue(nTradeStatus, out string decoded) ? decoded : "Неизвестный вид сделки";
+            return nTradeStatusDict.TryGetValue(nTradeStatus, out string? decoded) ? decoded : "Неизвестный вид сделки";
         }
+
+        [GeneratedRegex(@"(\d)(\d{2})(\d{2})")]
+        private static partial Regex DateRegex();
     }
 }

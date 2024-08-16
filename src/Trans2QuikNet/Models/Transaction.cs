@@ -10,7 +10,7 @@ namespace Trans2QuikNet.Models
 
         public Transaction(int TrnId) => InternalId = TrnId;
 
-        public ExecCondiotion ExecutionCondition;
+        public ExecCondition ExecutionCondition;
 
         /// <summary>
         /// Внутренний ID транзакции
@@ -88,46 +88,46 @@ namespace Trans2QuikNet.Models
         {
             StringBuilder sb = new();
 
-            sb.V("TRANS_ID", InternalId);
+            sb.AppendFieldAndValue("TRANS_ID", InternalId);
 
             switch (TransactionType)
             {
                 case TranType.New:
-                    sb.V("ACTION", "NEW_ORDER");
+                    sb.AppendFieldAndValue("ACTION", "NEW_ORDER");
                     break;
                 case TranType.Kill:
-                    sb.V("ACTION", "KILL_ORDER");
+                    sb.AppendFieldAndValue("ACTION", "KILL_ORDER");
                     break;
             }
 
             switch (Side)
             {
                 case Side.Buy:
-                    sb.V("OPERATION", "B");
+                    sb.AppendFieldAndValue("OPERATION", "B");
                     break;
                 case Side.Sell:
-                    sb.V("OPERATION", "S");
+                    sb.AppendFieldAndValue("OPERATION", "S");
                     break;
             }
 
             switch (ExecutionCondition)
             {
-                case ExecCondiotion.FillOrKill:
-                    sb.V("EXECUTION_CONDITION", "FILL_OR_KILL");
+                case ExecCondition.FillOrKill:
+                    sb.AppendFieldAndValue("EXECUTION_CONDITION", "FILL_OR_KILL");
                     break;
-                case ExecCondiotion.KillBalance:
-                    sb.V("EXECUTION_CONDITION", "KILL_BALANCE");
+                case ExecCondition.KillBalance:
+                    sb.AppendFieldAndValue("EXECUTION_CONDITION", "KILL_BALANCE");
                     break;
             }
 
-            sb.V("CLASSCODE", ClassCode);
-            sb.V("SECCODE", SecCode);
-            sb.V("PRICE", Price);
-            sb.V("ACCOUNT", Account);
-            sb.V("QUANTITY", Qty);
-            sb.V("CLIENT_CODE", ClientCode);
-            sb.V("ORDER_KEY", OrderNum);
-            sb.V("COMMENT", Comment);
+            sb.AppendFieldAndValue("CLASSCODE", ClassCode);
+            sb.AppendFieldAndValue("SECCODE", SecCode);
+            sb.AppendFieldAndValue("PRICE", Price);
+            sb.AppendFieldAndValue("ACCOUNT", Account);
+            sb.AppendFieldAndValue("QUANTITY", Qty);
+            sb.AppendFieldAndValue("CLIENT_CODE", ClientCode);
+            sb.AppendFieldAndValue("ORDER_KEY", OrderNum);
+            sb.AppendFieldAndValue("COMMENT", Comment);
 
             return sb.ToString();
         }

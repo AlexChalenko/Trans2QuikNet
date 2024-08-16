@@ -1,4 +1,6 @@
-﻿using Trans2QuikNet.Models;
+﻿using Trans2QuikNet.Managers;
+using Trans2QuikNet.Models;
+using Trans2QuikNet.Tools;
 using Xunit;
 
 namespace Trans2QuikNet.Tests
@@ -20,7 +22,7 @@ namespace Trans2QuikNet.Tests
             {
                 Account = "L01-00000F00",
                 ClassCode = "TQBR",
-                ExecutionCondition = ExecCondiotion.Queue,
+                ExecutionCondition = ExecCondition.Queue,
                 Price = 300,
                 Qty = 1,
                 SecCode = "SBER",
@@ -55,7 +57,7 @@ namespace Trans2QuikNet.Tests
             {
                 Account = "L01-00000F00",
                 ClassCode = "TQBR",
-                ExecutionCondition = ExecCondiotion.Queue,
+                ExecutionCondition = ExecCondition.Queue,
                 Price = 123,
                 Qty = 1,
                 SecCode = "SBER",

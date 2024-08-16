@@ -12,7 +12,7 @@
         Kill = 2
     }
 
-    public enum ExecCondiotion
+    public enum ExecCondition
     {
         Queue = 1,        //Поставить в очередь
         FillOrKill = 1,   // Полностью или отклонить
